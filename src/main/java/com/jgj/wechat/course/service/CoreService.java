@@ -68,6 +68,16 @@ public class CoreService {
 //                    处理上报地理位置事件
                 }else if(eventType.equals(MessageUtil.EVENT_TYPE_CLICK)){//自定义菜单
 //                    处理菜单点击事件
+//                    时间key值判断用户点击的按钮
+                    String eventKey =requestMap.get(Constants.WECHAT_PARAM_EVENT_KEY);
+                    if(eventKey.equals("V1001_TODAY_MUSIC")){
+                        respContent = "用户点击了\"今日歌曲\"按钮!";
+                    } else if(eventKey.equals("V1001_HELLO_WORD")){
+                        respContent = "用户点击了\"hello word\"按钮!";
+                    }else if(eventKey.equals("V1001_GOOD")){
+                        respContent = "用户点击了\"赞我们一下\"按钮!";
+                    }
+
                 }
             }
 //            设置文本消息的内容
