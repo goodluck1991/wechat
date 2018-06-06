@@ -1,11 +1,15 @@
 package com.jgj.wechat.course.service;
 
 import com.jgj.wechat.course.constants.Constants;
+import com.jgj.wechat.course.message.resp.NewsMessage;
 import com.jgj.wechat.course.message.resp.TextMessage;
+import com.jgj.wechat.course.message.resp.model.Article;
 import com.jgj.wechat.course.util.MessageUtil;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -59,7 +63,7 @@ public class CoreService {
                 String eventType = requestMap.get(Constants.WECHAT_PARAM_EVENT);
 
                 if (eventType.equals(MessageUtil.EVENT_TYPE_SUBSCRIBE)){//订阅事件
-                    respContent = "谢谢您的关注!";
+                    respContent = "您好,欢迎关注网址导航!我们致力于打造精品网址聚合应用,为用户提供表姐的上网导航服务.体验生活,从这里开始!!";
                 }else if(eventType.equals(MessageUtil.EVENT_TYPE_UNSUBSCRIBE)){//取消订阅事件
 //                    取消订阅后,用户不会再收到公众号账号发送的信息,因此不需要回复
                 }else if(eventType.equals(MessageUtil.EVENT_TYPE_SCAN)){//扫描带参数二维码
@@ -70,20 +74,36 @@ public class CoreService {
 //                    处理菜单点击事件
 //                    时间key值判断用户点击的按钮
                     String eventKey =requestMap.get(Constants.WECHAT_PARAM_EVENT_KEY);
-                    if(eventKey.equals("V1001_TODAY_MUSIC")){
-                        respContent = "用户点击了\"今日歌曲\"按钮!";
-                    } else if(eventKey.equals("V1001_HELLO_WORD")){
-                        respContent = "用户点击了\"hello word\"按钮!";
+                    if(eventKey.equals("oschina")){
+                        Article article = new Article();
+                        article.setTitle("开源中国");
+                        article.setDescription("开源中国社区成立于2008年8月,是目前中国最大的开源技术社区.\n\n开源中国的目的是为" +
+                                "中国的IT技术人员提供一个全面的,快捷更新的,用来检索开源软件以及交流开源经验的平台");
+                        article.setPicUrl("");
+                        article.setUrl("http://m.oschina.net");
+                        List<Article> articleList = new ArrayList<Article>();
+                        articleList.add(article);
+                        //创建图文消息
+                        NewsMessage newsMessage = new NewsMessage();
+                        newsMessage.setToUserName(fromUserName);
+                        newsMessage.setFromUserName(toUserName);
+                        newsMessage.setCreateTime(new Date().getTime());
+                        newsMessage.setMsgType(MessageUtil.RESP_MESSAGE_TYPE_NEWS);
+                        newsMessage.setArticleCount(articleList.size());
+                        newsMessage.setArticles(articleList);
+                        respXml = MessageUtil.messageToXml(newsMessage);
+                    } else if(eventKey.equals("iteye")){
+                        textMessage.setContent("ITeye即创办于2003年9月的JavaEye,从最初的以讨论Java技术为主的技术论坛,已经" +
+                                "逐渐发展成为涵盖整个软件开发领域的综合性网站.\n\nhttp://www.iteye.com");
+                        respXml = MessageUtil.messageToXml(textMessage);
                     }else if(eventKey.equals("V1001_GOOD")){
-                        respContent = "用户点击了\"赞我们一下\"按钮!";
+//                        设置文本消息的内容
+                        textMessage.setContent(respContent);
+//                        将文本消息对象装换成XML
+                        respXml = MessageUtil.messageToXml(textMessage);
                     }
-
                 }
             }
-//            设置文本消息的内容
-            textMessage.setContent(respContent);
-//            将文本消息对象装换成XML
-            respXml = MessageUtil.messageToXml(textMessage);
         } catch (Exception e){
             e.printStackTrace();
         }
