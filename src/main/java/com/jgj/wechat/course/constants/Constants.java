@@ -15,13 +15,5 @@ public class Constants {
     public static final String WECHAT_PARAM_EVENT = "Event";
     public static final String WECHAT_PARAM_EVENT_KEY = "EventKey";
 
-    //菜单获取
-    public static final String WECHAT_MENU_GET = "https://api.weixin.qq.com/cgi-bin/menu/get?access_token=";
-    //菜单删除
-    public static final String WECHAT_MENU_DELETE = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=";
-    //菜单创建
-    public static final String WECHAT_MENU_CREATE = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=";
-
-
 
 }
