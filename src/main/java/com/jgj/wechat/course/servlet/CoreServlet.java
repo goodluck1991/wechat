@@ -3,6 +3,8 @@ package com.jgj.wechat.course.servlet;
 import com.jgj.wechat.course.constants.Constants;
 import com.jgj.wechat.course.service.CoreService;
 import com.jgj.wechat.course.util.SignUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,7 +19,7 @@ import java.io.PrintWriter;
  */
 @WebServlet(name = "CoreServlet",urlPatterns = "/CoreServlet")
 public class CoreServlet extends HttpServlet {
-//    private static final Logger LOGGER = Logger.getLogger(CoreServlet.class);
+    private static Logger logger = LoggerFactory.getLogger(CoreServlet.class);
 
     /**
      * 请求校验(确认请求来自微信服务器)
@@ -69,6 +71,7 @@ public class CoreServlet extends HttpServlet {
         if(SignUtil.checkSignature(signature,timestamp,nonce)){
 //            调用核心服务类接受处理请求
             String respXml = CoreService.processRequest(request);
+            logger.info("响应消息:{}",respXml);
             out.print(respXml);
         }
         out.close();

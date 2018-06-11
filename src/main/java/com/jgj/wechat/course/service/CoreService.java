@@ -5,6 +5,8 @@ import com.jgj.wechat.course.message.resp.NewsMessage;
 import com.jgj.wechat.course.message.resp.TextMessage;
 import com.jgj.wechat.course.message.resp.model.Article;
 import com.jgj.wechat.course.util.MessageUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -17,7 +19,7 @@ import java.util.Map;
  * Created by guojun.jiao on 2018/5/9.
  */
 public class CoreService {
-
+    private static Logger logger = LoggerFactory.getLogger(CoreService.class);
     /**
      * 处理微信发来的请求
      * @param request
@@ -32,6 +34,7 @@ public class CoreService {
         try {
 //            调用parseXml方法解析请求消息
             Map<String, String> requestMap = MessageUtil.parseXml(request);
+            logger.info("微信公众号请求参数:{}",requestMap);
 //            发送方账号
             String fromUserName = requestMap.get(Constants.WECHAT_PARAM_FROMUSERNAME);
 //            开发者账号
@@ -51,6 +54,13 @@ public class CoreService {
             }else if(msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_IMAGE)){//图片消息
                 respContent = "您发送的是图片信息!";
             }else if(msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_VOICE)){//语音消息
+//                语音消息文件的标识
+//                String mediaId = requestMap.get("MediaId");
+////                语音格式:amr
+//                String format = requestMap.get("Format");
+////                语音识别结果
+//                String recognition = requestMap.get("Recognition");
+
                 respContent = "您发送的是语音信息!";
             }else if(msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_VIDEO)){//视频消息
                 respContent = "您发送的是视频信息!";
@@ -91,12 +101,12 @@ public class CoreService {
                         newsMessage.setMsgType(MessageUtil.RESP_MESSAGE_TYPE_NEWS);
                         newsMessage.setArticleCount(articleList.size());
                         newsMessage.setArticles(articleList);
-                        respXml = MessageUtil.messageToXml(newsMessage);
+                        respXml = MessageUtil.messageToXml(newsMessage).replace("com.jgj.wechat.course.message.resp.model.Article","item");
                     } else if(eventKey.equals("iteye")){
                         textMessage.setContent("ITeye即创办于2003年9月的JavaEye,从最初的以讨论Java技术为主的技术论坛,已经" +
                                 "逐渐发展成为涵盖整个软件开发领域的综合性网站.\n\nhttp://www.iteye.com");
                         respXml = MessageUtil.messageToXml(textMessage);
-                    }else if(eventKey.equals("V1001_GOOD")){
+                    }else{
 //                        设置文本消息的内容
                         textMessage.setContent(respContent);
 //                        将文本消息对象装换成XML
